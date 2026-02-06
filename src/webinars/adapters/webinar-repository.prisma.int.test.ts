@@ -77,7 +77,83 @@ describe('PrismaWebinarRepository', () => {
       });
     });
   });
+
+  describe('Scenario : repository.findById', () => {
+    it('should find by id if exists', async () => {
+      // ARRANGE
+      const webinar = new Webinar({
+        id: 'webinar-id',
+        organizerId: 'organizer-id',
+        title: 'Webinar title',
+        startDate: new Date('2022-01-01T00:00:00Z'),
+        endDate: new Date('2022-01-01T01:00:00Z'),
+        seats: 100,
+      });
+
+      await repository.create(webinar);
+
+      // ACT
+      const result = await repository.findById('webinar-id');
+
+      // ASSERT
+
+      expect(result).toBeTruthy();
+    });
+
+    it('should not find by id if exists pas', async () => {
+      // ARRANGE
+      const webinar = new Webinar({
+        id: 'webinar-id',
+        organizerId: 'organizer-id',
+        title: 'Webinar title',
+        startDate: new Date('2022-01-01T00:00:00Z'),
+        endDate: new Date('2022-01-01T01:00:00Z'),
+        seats: 100,
+      });
+
+      await repository.create(webinar);
+
+      // ACT
+      const result = await repository.findById('pas-webinar-id');
+
+      // ASSERT
+
+      expect(result).toBeFalsy();
+    });
+  });
+
+  describe('Scenario : repository.update', () => {
+    it('should update a webinar', async () => {
+      // ARRANGE
+      const webinar = new Webinar({
+        id: 'webinar-id',
+        organizerId: 'organizer-id',
+        title: 'Webinar title',
+        startDate: new Date('2022-01-01T00:00:00Z'),
+        endDate: new Date('2022-01-01T01:00:00Z'),
+        seats: 100,
+      });
+      await repository.create(webinar);
+
+      webinar.props.title = 'Webinar title avec une moustache';
+      webinar.props.seats = 102;
+
+      // ACT
+
+      await repository.update(webinar);
+
+      // ASSERT
+      const maybeWebinar = await prismaClient.webinar.findUnique({
+        where: { id: 'webinar-id' },
+      });
+      expect(maybeWebinar).toEqual({
+        id: 'webinar-id',
+        organizerId: 'organizer-id',
+        title: 'Webinar title avec une moustache',
+        startDate: new Date('2022-01-01T00:00:00Z'),
+        endDate: new Date('2022-01-01T01:00:00Z'),
+        seats: 102,
+      });
+    });
+  });
 });
-// C. Ecriture de notre premier test d'intégration
-// findByID
-// update
