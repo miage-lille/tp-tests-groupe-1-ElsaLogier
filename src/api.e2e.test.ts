@@ -71,7 +71,7 @@ describe('Webinar Routes E2E', () => {
       .expect(404);
 
     // ASSERT
-    expect(response.body).toEqual({ message: 'Webinar not found' });
+    expect(response.body).toEqual({ error: 'Webinar not found' });
   });
 
   it('should fail when the user is not the organizer', async () => {
@@ -98,7 +98,7 @@ describe('Webinar Routes E2E', () => {
 
     // ASSERT
     expect(response.body).toEqual({
-      message: 'User is not allowed to update this webinar',
+      error: 'User is not allowed to update this webinar',
     });
   });
 });
